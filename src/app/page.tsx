@@ -30,33 +30,36 @@ export default function Home() {
   function share() {
     const tg = getTelegramWebApp();
     if (!tg || !data) return;
-
     tg.sendData?.(
         `Сьогодні я — ${data.vibe}\n${data.role}\n${data.meme}`
     );
   }
 
   return (
-      <div className="w-full max-w-md space-y-6">
-        <h1 className="text-4xl font-semibold leading-tight">
+      <div className="w-full max-w-md p-6 space-y-6 bg-gradient-to-b from-indigo-900 via-purple-900 to-pink-900 rounded-3xl shadow-2xl">
+        <h1 className="text-5xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 to-pink-500 text-center drop-shadow-lg">
           Хто ти<br />сьогодні?
         </h1>
 
         {!data && (
-            <Button onClick={generate}>
-              {loading ? 'Думаю…' : 'Отримати профайл'}
-            </Button>
+            <div className="flex justify-center">
+              <Button onClick={generate}>
+                {loading ? 'Думаю…' : 'Отримати профайл'}
+              </Button>
+            </div>
         )}
 
         {data && (
-            <div className="space-y-4">
+            <div className="space-y-4 animate-fadeIn">
               <Card title="Вайб" text={data.vibe} />
               <Card title="Роль" text={data.role} />
               <Card title="Мем / герой" text={data.meme} />
 
-              <Button onClick={share}>
-                Поділитись
-              </Button>
+              <div className="flex justify-center">
+                <Button onClick={share}>
+                  Поділитись
+                </Button>
+              </div>
             </div>
         )}
       </div>
