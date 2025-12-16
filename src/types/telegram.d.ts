@@ -13,6 +13,7 @@ declare global {
         initDataUnsafe?: {
             user?: TelegramUser;
         };
+        openTelegramLink?(url: string): void; // <- додали метод
     }
 
     interface TelegramUser {
