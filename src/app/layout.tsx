@@ -1,12 +1,16 @@
 import Script from "next/script";
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+export default function RootLayout({
+                                       children,
+                                   }: {
+    children: React.ReactNode;
+}) {
     return (
-        <html lang="en">
+        <html lang="uk">
         <head>
             <Script
                 src="https://telegram.org/js/telegram-web-app.js"
-                strategy="afterInteractive" // скрипт завантажується після рендера
+                strategy="afterInteractive"
             />
         </head>
         <body>{children}</body>
