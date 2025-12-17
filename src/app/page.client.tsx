@@ -31,95 +31,95 @@ export default function Home() {
     const today = new Date().toISOString().slice(0, 10);
     const currentQuestion = dailyQuestions.find((q) => q.category === category) ?? dailyQuestions[0];
 
-    // Ініціалізація пари
+    // Ініціалізація Telegram WebApp
     useEffect(() => {
-        setTimeout(() => {
+        if (typeof window !== "undefined" && window.Telegram?.WebApp) {
+            const tg = window.Telegram.WebApp;
+            tg.ready();
+            tg.expand();
+            document.body.classList.toggle("dark", tg.colorScheme === "dark");
+        }
+    }, []);
+
+    // Ініціалізація пари без синхронних setState
+    useEffect(() => {
+        const initializePair = () => {
+            const savedPartner = localStorage.getItem(`pair_${userId}`);
+
             if (startParam && startParam.startsWith("pair_")) {
                 const invitedById = startParam.replace("pair_", "");
                 if (invitedById !== userId) {
-                    setPartnerId(invitedById);
                     localStorage.setItem(`pair_${userId}`, invitedById);
                     localStorage.setItem(`pair_${invitedById}`, userId);
+                    setPartnerId(invitedById);
+                    return;
                 }
             }
-            const savedPartner = localStorage.getItem(`pair_${userId}`);
+
             if (savedPartner && savedPartner !== userId) {
                 setPartnerId(savedPartner);
             }
-        }, 0);
+        };
+
+        setTimeout(initializePair, 0);
     }, [startParam, userId]);
 
-    // Завантаження відповідей з localStorage
+    // Завантаження збережених відповідей без помилок ESLint
     useEffect(() => {
-        const key = `answers_${today}_${currentQuestion.id}_${userId}`;
-        const saved = localStorage.getItem(key);
-        if (saved) {
+        const loadData = () => {
+            const key = `answers_${today}_${currentQuestion.id}_${userId}`;
+            const saved = localStorage.getItem(key);
+            if (!saved) return;
+
             try {
                 const data = JSON.parse(saved) as { answers: Record<string, string>; myAnswer?: string };
                 setAnswers(data.answers ?? {});
                 setMyAnswer(data.myAnswer ?? "");
-                setAllAnswered(
-                    category === "pair" && partnerId
-                        ? !!data.answers[userId] && !!data.answers[partnerId]
-                        : !!data.myAnswer
-                );
+
+                const answered = category === "pair" && partnerId
+                    ? !!(data.answers?.[userId] && data.answers?.[partnerId])
+                    : !!data.myAnswer;
+
+                setAllAnswered(answered);
             } catch (e) {
                 console.error("Помилка localStorage", e);
             }
-        }
+        };
+
+        setTimeout(loadData, 0); // асинхронно, щоб уникнути cascade render
     }, [today, currentQuestion.id, userId, category, partnerId]);
 
     const submitAnswer = () => {
         if (!myAnswer.trim()) return;
         const newAnswers: Record<string, string> = { ...answers, [userId]: myAnswer };
         setAnswers(newAnswers);
-        const saveData = { answers: newAnswers, myAnswer };
-        localStorage.setItem(`answers_${today}_${currentQuestion.id}_${userId}`, JSON.stringify(saveData));
+        localStorage.setItem(`answers_${today}_${currentQuestion.id}_${userId}`, JSON.stringify({ answers: newAnswers, myAnswer }));
 
-        if (category === "pair" && partnerId && answers[partnerId]) {
-            setAllAnswered(true);
-        } else if (category !== "pair") {
-            setAllAnswered(true);
-        }
+        const answered = category === "pair" && partnerId
+            ? !!(newAnswers[userId] && newAnswers[partnerId])
+            : !!myAnswer;
+        setAllAnswered(answered);
     };
 
-    // Поділитися питанням
     const shareToday = () => {
         const tg = window.Telegram?.WebApp;
         if (!tg) return;
-
-        tg.ready();
-        tg.expand();
-
-        const text = `Сьогоднішнє питання в «1 Питання на День»:\n\n${currentQuestion.text}\n\nСпробуй і ти! 👉`;
         const botUsername = tg.initDataUnsafe?.bot_username || "your_bot_username";
         const url = `https://t.me/${botUsername}/app`;
+        const text = `Сьогоднішнє питання в «1 Питання на День»:\n\n${currentQuestion.text}\n\nСпробуй і ти! 👉`;
         const shareUrl = `https://t.me/share/url?url=${encodeURIComponent(url)}&text=${encodeURIComponent(text)}`;
         tg.openTelegramLink(shareUrl);
     };
 
-    // Запросити партнера
     const invitePartner = () => {
         const tg = window.Telegram?.WebApp;
         if (!tg) return;
-
-        tg.ready();
-        tg.expand();
-
         const botUsername = tg.initDataUnsafe?.bot_username || "your_bot_username";
         const inviteLink = `https://t.me/${botUsername}/app?startapp=pair_${userId}`;
         const text = `${userName} запрошує тебе грати в «1 Питання на День» для пар! 💕`;
         const shareUrl = `https://t.me/share/url?url=${encodeURIComponent(inviteLink)}&text=${encodeURIComponent(text)}`;
         tg.openTelegramLink(shareUrl);
     };
-
-    // Підлаштування теми Telegram
-    useEffect(() => {
-        if (window.Telegram?.WebApp?.colorScheme) {
-            const scheme = window.Telegram.WebApp.colorScheme;
-            document.body.classList.toggle("dark", scheme === "dark");
-        }
-    }, []);
 
     return (
         <main className="min-h-screen bg-gradient-to-b from-blue-50 to-purple-50 dark:from-gray-900 dark:to-gray-800 py-8 px-4">
