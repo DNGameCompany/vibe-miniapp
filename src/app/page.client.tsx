@@ -135,7 +135,7 @@ export default function Home() {
     };
 
     const shareToday = () => {
-        const botUsername = tgWebApp?.initDataUnsafe?.bot_username || "your_bot_username";
+        const botUsername = tgWebApp?.initDataUnsafe?.bot_username || "@vibeminiapp_bot";
         const url = `https://t.me/${botUsername}/app`;
         const text = `Сьогоднішнє питання в «1 Питання на День»:\n\n${currentQuestion.text}\n\nСпробуй і ти! 👉`;
         const shareUrl = `https://t.me/share/url?url=${encodeURIComponent(url)}&text=${encodeURIComponent(text)}`;
@@ -143,7 +143,7 @@ export default function Home() {
     };
 
     const invitePartner = () => {
-        const botUsername = tgWebApp?.initDataUnsafe?.bot_username || "your_bot_username";
+        const botUsername = tgWebApp?.initDataUnsafe?.bot_username || "@vibeminiapp_bot";
         const inviteLink = `https://t.me/${botUsername}/app?startapp=pair_${userId}`;
         const text = `${userName} запрошує тебе грати в «1 Питання на День» для пар! 💕`;
         const shareUrl = `https://t.me/share/url?url=${encodeURIComponent(inviteLink)}&text=${encodeURIComponent(text)}`;
