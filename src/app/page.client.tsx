@@ -36,6 +36,8 @@ export default function Home() {
             setWebApp(app);
             app.ready();
             app.expand();
+            // Підлаштовуємо темну/світлу тему
+            document.body.classList.toggle("dark", app.colorScheme === "dark");
         }
     }, []);
 
@@ -155,7 +157,7 @@ export default function Home() {
                     <select
                         value={category}
                         onChange={(e) => setCategory(e.target.value as "pair" | "friends" | "self")}
-                        className="w-full px-5 py-4 text-lg bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-xl focus:ring-4 focus:ring-purple-300 dark:focus:ring-purple-700 focus:border-purple-500 transition"
+                        className="w-full px-5 py-4 text-lg bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-xl focus:ring-4 focus:ring-purple-300 dark:focus:ring-purple-700 focus:border-purple-500 transition text-gray-800 dark:text-gray-200"
                     >
                         <option value="pair">Для пари 💕</option>
                         <option value="friends">Для друзів 👥</option>
@@ -190,12 +192,12 @@ export default function Home() {
                 {/* Відповідь */}
                 {!allAnswered ? (
                     <div className="space-y-6">
-            <textarea
-                value={myAnswer}
-                onChange={(e) => setMyAnswer(e.target.value)}
-                placeholder="Напиши свою відповідь... ❤️"
-                className="w-full px-6 py-5 text-lg bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-2xl resize-none h-48 focus:ring-4 focus:ring-purple-300 dark:focus:ring-purple-700 focus:border-purple-500 transition shadow-inner"
-            />
+                        <textarea
+                            value={myAnswer}
+                            onChange={(e) => setMyAnswer(e.target.value)}
+                            placeholder="Напиши свою відповідь... ❤️"
+                            className="w-full px-6 py-5 text-lg bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-2xl resize-none h-48 focus:ring-4 focus:ring-purple-300 dark:focus:ring-purple-700 focus:border-purple-500 transition shadow-inner text-gray-800 dark:text-gray-200"
+                        />
                         <button
                             onClick={submitAnswer}
                             disabled={!myAnswer.trim()}

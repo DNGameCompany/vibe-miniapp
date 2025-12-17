@@ -1,7 +1,7 @@
-/* globals.css */
+/* Під Tailwind v4 */
 @import "tailwindcss";
 
-/* кастомні стилі, якщо треба */
+/* Базові стилі для Telegram WebApp */
 html, body, #__next {
   height: 100%;
   margin: 0;
@@ -9,6 +9,7 @@ html, body, #__next {
   overscroll-behavior: none;
 }
 
+/* Приховуємо скролбар */
 * {
   scrollbar-width: none;
 }
