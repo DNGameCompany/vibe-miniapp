@@ -145,9 +145,6 @@ export default function Home() {
                 <p className="text-center text-lg text-gray-600 dark:text-gray-300 mb-8">
                     Привіт, {userName}! 👋
                 </p>
-                <div className="bg-red-500 text-white p-8 text-4xl text-center">
-                    Якщо бачиш червоний фон — Tailwind працює!
-                </div>
 
                 {/* Категорія */}
                 <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6 mb-8">
