@@ -127,89 +127,113 @@ export default function Home() {
         const botUsername = webApp.initDataUnsafe?.bot_username || "your_bot_username";
         const inviteLink = `https://t.me/${botUsername}/app?startapp=pair_${userId}`;
 
-        const text = `${userName} запрошує тебе в «1 Питання на День» для пар! 💕\n\nЩодня одне глибоке питання — відповідайте разом.\n\nПриєднуйся:`;
+        const text = `${userName} запрошує тебе грати в «1 Питання на День» для пар! 💕\n\nЩодня одне глибоке питання — відповідайте разом і зближуйтесь.\n\nПриєднуйся:`;
 
         const shareUrl = `https://t.me/share/url?url=${encodeURIComponent(inviteLink)}&text=${encodeURIComponent(text)}`;
         webApp.openTelegramLink(shareUrl);
     };
 
     return (
-        <main className="p-4 max-w-md mx-auto min-h-screen">
-            <h1 className="text-3xl font-bold mb-6 text-center">1 Питання на День</h1>
-            <p className="mb-6 text-center text-lg">Привіт, {userName}! 👋</p>
+        <main className="min-h-screen bg-gradient-to-b from-blue-50 to-purple-50 dark:from-gray-900 dark:to-gray-800 py-8 px-4">
+            <div className="max-w-md mx-auto">
+                {/* Заголовок */}
+                <h1 className="text-4xl font-bold text-center text-transparent bg-clip-text bg-gradient-to-r from-pink-500 to-purple-600 mb-2">
+                    1 Питання на День
+                </h1>
+                <p className="text-center text-lg text-gray-600 dark:text-gray-300 mb-8">
+                    Привіт, {userName}! 👋
+                </p>
 
-            <div className="mb-8 bg-white rounded-xl shadow p-4">
-                <label className="block font-semibold mb-3">Обери категорію:</label>
-                <select
-                    value={category}
-                    onChange={(e) => setCategory(e.target.value as "pair" | "friends" | "self")}
-                    className="w-full border border-gray-300 rounded-lg px-4 py-3 text-lg"
-                >
-                    <option value="pair">Для пари 💕</option>
-                    <option value="friends">Для друзів 👥</option>
-                    <option value="self">Для себе 🌱</option>
-                </select>
-            </div>
-
-            {category === "pair" && partnerId && (
-                <div className="mb-6 bg-green-50 border border-green-300 rounded-xl p-4 text-center">
-                    <p className="text-green-800 font-medium">Ти в парі! 🎉</p>
+                {/* Категорія */}
+                <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6 mb-8">
+                    <label className="block text-lg font-medium text-gray-800 dark:text-gray-200 mb-4">
+                        Обери категорію
+                    </label>
+                    <select
+                        value={category}
+                        onChange={(e) => setCategory(e.target.value as "pair" | "friends" | "self")}
+                        className="w-full px-5 py-4 text-lg bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-xl focus:ring-4 focus:ring-purple-300 dark:focus:ring-purple-700 focus:border-purple-500 transition"
+                    >
+                        <option value="pair">Для пари 💕</option>
+                        <option value="friends">Для друзів 👥</option>
+                        <option value="self">Для себе 🌱</option>
+                    </select>
                 </div>
-            )}
 
-            {category === "pair" && !partnerId && (
-                <div className="mb-8">
+                {/* Статус пари */}
+                {category === "pair" && partnerId && (
+                    <div className="bg-gradient-to-r from-green-400 to-emerald-500 rounded-2xl p-5 text-white text-center mb-8 shadow-lg">
+                        <p className="text-xl font-bold">Ти в парі! 🎉</p>
+                        <p className="text-sm opacity-90 mt-1">Чекаємо відповідь партнера...</p>
+                    </div>
+                )}
+
+                {category === "pair" && !partnerId && (
                     <button
                         onClick={invitePartner}
-                        className="w-full bg-pink-600 hover:bg-pink-700 text-white font-bold py-4 rounded-xl text-xl transition"
+                        className="w-full bg-gradient-to-r from-pink-500 to-rose-500 hover:from-pink-600 hover:to-rose-600 text-white font-bold py-5 rounded-2xl text-xl shadow-lg transition transform hover:scale-105 mb-8"
                     >
                         Запросити партнера 💌
                     </button>
-                </div>
-            )}
+                )}
 
-            <div className="mb-8 bg-white rounded-xl shadow p-6">
-                <h2 className="text-2xl font-semibold text-center">{currentQuestion.text}</h2>
+                {/* Питання */}
+                <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-8 mb-8">
+                    <h2 className="text-2xl font-bold text-center text-gray-800 dark:text-gray-100 leading-relaxed">
+                        {currentQuestion.text}
+                    </h2>
+                </div>
+
+                {/* Відповідь */}
+                {!allAnswered ? (
+                    <div className="space-y-6">
+            <textarea
+                value={myAnswer}
+                onChange={(e) => setMyAnswer(e.target.value)}
+                placeholder="Напиши свою відповідь... ❤️"
+                className="w-full px-6 py-5 text-lg bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-2xl resize-none h-48 focus:ring-4 focus:ring-purple-300 dark:focus:ring-purple-700 focus:border-purple-500 transition shadow-inner"
+            />
+                        <button
+                            onClick={submitAnswer}
+                            disabled={!myAnswer.trim()}
+                            className="w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 disabled:from-gray-400 disabled:to-gray-500 text-white font-bold py-5 rounded-2xl text-xl shadow-lg transition transform hover:scale-105 disabled:scale-100"
+                        >
+                            Надіслати відповідь 🚀
+                        </button>
+                    </div>
+                ) : (
+                    <div className="space-y-6">
+                        <h3 className="text-3xl font-bold text-center text-transparent bg-clip-text bg-gradient-to-r from-purple-600 to-pink-600">
+                            Відповіді 🎉
+                        </h3>
+                        {Object.entries(answers).map(([id, ans]) => (
+                            <div
+                                key={id}
+                                className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6 border-l-8 border-purple-500"
+                            >
+                                <strong className="text-xl text-purple-600 dark:text-purple-400">
+                                    {id === userId ? "Ти" : "Партнер"}:
+                                </strong>
+                                <p className="mt-3 text-lg text-gray-800 dark:text-gray-200 leading-relaxed">
+                                    {ans}
+                                </p>
+                            </div>
+                        ))}
+                    </div>
+                )}
+
+                {/* Шаринг */}
+                <button
+                    onClick={shareToday}
+                    className="w-full mt-12 bg-gradient-to-r from-green-500 to-teal-500 hover:from-green-600 hover:to-teal-600 text-white font-bold py-5 rounded-2xl text-xl shadow-lg transition transform hover:scale-105"
+                >
+                    Поділитися питанням з друзями 📤
+                </button>
+
+                <p className="mt-10 text-center text-sm text-gray-500 dark:text-gray-400">
+                    MVP • Відповіді зберігаються локально
+                </p>
             </div>
-
-            {!allAnswered ? (
-                <div className="space-y-6">
-          <textarea
-              value={myAnswer}
-              onChange={(e) => setMyAnswer(e.target.value)}
-              placeholder="Напиши свою відповідь тут..."
-              className="w-full border border-gray-300 rounded-xl px-5 py-4 h-40 resize-none text-lg"
-          />
-                    <button
-                        onClick={submitAnswer}
-                        disabled={!myAnswer.trim()}
-                        className="w-full bg-blue-600 hover:bg-blue-700 disabled:bg-gray-400 text-white font-bold py-4 rounded-xl text-xl transition"
-                    >
-                        Надіслати відповідь 🚀
-                    </button>
-                </div>
-            ) : (
-                <div className="space-y-6">
-                    <h3 className="text-2xl font-semibold text-center">Відповіді 🎉</h3>
-                    {Object.entries(answers).map(([id, ans]) => (
-                        <div key={id} className="bg-white rounded-xl shadow p-5">
-                            <strong className="text-lg">{id === userId ? "Ти" : "Партнер"}:</strong>
-                            <p className="mt-2 text-lg">{ans}</p>
-                        </div>
-                    ))}
-                </div>
-            )}
-
-            <button
-                onClick={shareToday}
-                className="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-4 rounded-xl text-xl mt-10 transition"
-            >
-                Поділитися сьогоднішнім питанням 📤
-            </button>
-
-            <p className="mt-10 text-center text-sm text-gray-600">
-                MVP: пари та відповіді зберігаються локально
-            </p>
         </main>
     );
 }
