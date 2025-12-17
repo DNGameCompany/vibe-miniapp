@@ -17,24 +17,32 @@ const dailyQuestions: Question[] = [
 
 export default function Home() {
   const lp = useLaunchParams();
-  const startParam = lp.startParam as string | undefined; // Правильна типізація!
+  const startParam = lp.startParam as string | undefined;
 
   const user = lp.tgWebAppData?.user;
   const userId = user?.id?.toString() ?? "demo";
   const userName = user?.first_name || "Користувач";
 
-  const rawWebApp = typeof window !== "undefined" ? window.Telegram?.WebApp : null;
-  const webApp = rawWebApp as (typeof rawWebApp) & {
+  const [webApp, setWebApp] = useState<{
+    ready: () => void;
+    expand: () => void;
     initDataUnsafe?: { bot_username?: string };
     openTelegramLink?: (url: string) => void;
-  };
+  } | null>(null);
 
+  // ВИПРАВЛЕНО: setWebApp винесено в асинхронний тік
   useEffect(() => {
-    if (webApp) {
-      webApp.ready();
-      webApp.expand();
+    if (typeof window !== "undefined" && window.Telegram?.WebApp) {
+      const app = window.Telegram.WebApp;
+
+      setTimeout(() => {
+        setWebApp(app);
+      }, 0);
+
+      app.ready();
+      app.expand();
     }
-  }, [webApp]);
+  }, []);
 
   const today = new Date().toISOString().slice(0, 10);
 
@@ -44,9 +52,9 @@ export default function Home() {
   const [myAnswer, setMyAnswer] = useState<string>("");
   const [allAnswered, setAllAnswered] = useState<boolean>(false);
 
-  // Автоматичне парування через deep link
+  // Парування — вже асинхронно
   useEffect(() => {
-    const setupPairing = () => {
+    setTimeout(() => {
       if (startParam && startParam.startsWith("pair_")) {
         const invitedById = startParam.replace("pair_", "");
         if (invitedById !== userId) {
@@ -56,21 +64,18 @@ export default function Home() {
         }
       }
 
-      // Відновлення збереженої пари
       const savedPartner = localStorage.getItem(`pair_${userId}`);
       if (savedPartner && savedPartner !== userId) {
         setPartnerId(savedPartner);
       }
-    };
-
-    setupPairing();
+    }, 0);
   }, [startParam, userId]);
 
   const currentQuestion = dailyQuestions.find(q => q.category === category) ?? dailyQuestions[0];
 
-  // Завантаження відповідей — асинхронно, щоб уникнути ESLint warning
+  // Завантаження відповідей — вже асинхронно
   useEffect(() => {
-    const loadData = async () => {
+    const loadData = () => {
       const key = `answers_${today}_${currentQuestion.id}_${userId}`;
       const saved = localStorage.getItem(key);
 
@@ -78,16 +83,14 @@ export default function Home() {
         try {
           const data = JSON.parse(saved) as { answers: Record<string, string>; myAnswer?: string };
 
-          // Асинхронний setState
           setTimeout(() => {
             setAnswers(data.answers ?? {});
             setMyAnswer(data.myAnswer ?? "");
-
-            if (category === "pair" && partnerId && data.answers[userId] && data.answers[partnerId]) {
-              setAllAnswered(true);
-            } else if (category !== "pair" && data.myAnswer) {
-              setAllAnswered(true);
-            }
+            setAllAnswered(
+                category === "pair" && partnerId
+                    ? !!data.answers[userId] && !!data.answers[partnerId]
+                    : !!data.myAnswer
+            );
           }, 0);
         } catch (e) {
           console.error("Помилка localStorage", e);
