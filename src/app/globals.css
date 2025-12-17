@@ -2,26 +2,29 @@
 @import "tailwindcss/preflight";
 @tailwind utilities;
 
-/* Базові стилі для Telegram Mini App (щоб тема працювала) */
+/* Базові стилі для Telegram Mini App */
 html, body, #__next {
-  height: 100%;
-  margin: 0;
-  padding: 0;
+  @apply h-full m-0 p-0;
   overscroll-behavior: none;
-  background-color: var(--tg-theme-bg-color, #ffffff);
-  color: var(--tg-theme-text-color, #000000);
+}
+
+/* Фолбек для локальної розробки */
+body {
+  @apply bg-white text-black;
+}
+
+/* Підтримка теми Telegram (працює тільки в Mini App) */
+@supports (background-color: var(--tg-theme-bg-color)) {
+  body {
+    background-color: var(--tg-theme-bg-color);
+    color: var(--tg-theme-text-color);
+  }
 }
 
 /* Приховуємо скролбар */
 * {
   scrollbar-width: none;
-  -ms-overflow-style: none;
 }
 *::-webkit-scrollbar {
   display: none;
-}
-
-/* Плавні переходи */
-* {
-  transition: background-color 0.3s ease, color 0.3s ease;
 }
