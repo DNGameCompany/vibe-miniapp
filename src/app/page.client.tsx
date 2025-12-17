@@ -1,5 +1,4 @@
 "use client";
-/* eslint-disable react-hooks/set-state-in-effect */
 import { useEffect, useState } from "react";
 import { useLaunchParams } from "@telegram-apps/sdk-react";
 
@@ -86,7 +85,6 @@ export default function Home() {
 
     // Поділитися питанням
     const shareToday = () => {
-        if (typeof window === "undefined") return;
         const tg = window.Telegram?.WebApp;
         if (!tg) return;
 
@@ -102,7 +100,6 @@ export default function Home() {
 
     // Запросити партнера
     const invitePartner = () => {
-        if (typeof window === "undefined") return;
         const tg = window.Telegram?.WebApp;
         if (!tg) return;
 
@@ -118,7 +115,7 @@ export default function Home() {
 
     // Підлаштування теми Telegram
     useEffect(() => {
-        if (typeof window !== "undefined" && window.Telegram?.WebApp?.colorScheme) {
+        if (window.Telegram?.WebApp?.colorScheme) {
             const scheme = window.Telegram.WebApp.colorScheme;
             document.body.classList.toggle("dark", scheme === "dark");
         }
