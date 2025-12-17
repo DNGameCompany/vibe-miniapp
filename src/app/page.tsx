@@ -30,18 +30,19 @@ export default function Home() {
     openTelegramLink?: (url: string) => void;
   } | null>(null);
 
-  // ВИПРАВЛЕНО: setWebApp винесено в асинхронний тік
+  // Ініціалізація Telegram WebApp — тільки на клієнті
   useEffect(() => {
-    if (typeof window !== "undefined" && window.Telegram?.WebApp) {
+    const initTelegram = () => {
+      if (typeof window === "undefined") return;
+      if (!window.Telegram?.WebApp) return;
+
       const app = window.Telegram.WebApp;
-
-      setTimeout(() => {
-        setWebApp(app);
-      }, 0);
-
+      setTimeout(() => setWebApp(app), 0);
       app.ready();
       app.expand();
-    }
+    };
+
+    initTelegram();
   }, []);
 
   const today = new Date().toISOString().slice(0, 10);
@@ -52,7 +53,7 @@ export default function Home() {
   const [myAnswer, setMyAnswer] = useState<string>("");
   const [allAnswered, setAllAnswered] = useState<boolean>(false);
 
-  // Парування — вже асинхронно
+  // Автоматичне парування — асинхронно
   useEffect(() => {
     setTimeout(() => {
       if (startParam && startParam.startsWith("pair_")) {
@@ -73,7 +74,7 @@ export default function Home() {
 
   const currentQuestion = dailyQuestions.find(q => q.category === category) ?? dailyQuestions[0];
 
-  // Завантаження відповідей — вже асинхронно
+  // Завантаження відповідей — асинхронно
   useEffect(() => {
     const loadData = () => {
       const key = `answers_${today}_${currentQuestion.id}_${userId}`;
