@@ -164,7 +164,15 @@ export default function Home() {
 
                 {category === "pair" && !partnerId && (
                     <button
-                        onClick={invitePartner}
+                        type="button"
+                        onClick={() => {
+                            if (!webApp?.openTelegramLink) return;
+                            const botUsername = webApp.initDataUnsafe?.bot_username || "your_bot_username";
+                            const inviteLink = `https://t.me/${botUsername}/app?startapp=pair_${userId}`;
+                            const text = `${userName} запрошує тебе грати в «1 Питання на День» для пар! 💕`;
+                            const shareUrl = `https://t.me/share/url?url=${encodeURIComponent(inviteLink)}&text=${encodeURIComponent(text)}`;
+                            webApp.openTelegramLink(shareUrl);
+                        }}
                         className="w-full bg-gradient-to-r from-pink-500 to-rose-500 hover:from-pink-600 hover:to-rose-600 text-white font-bold py-5 rounded-2xl text-xl shadow-lg transition transform hover:scale-105 mb-8"
                     >
                         Запросити партнера 💌
@@ -216,7 +224,15 @@ export default function Home() {
 
                 {/* Шаринг */}
                 <button
-                    onClick={shareToday}
+                    type="button"
+                    onClick={() => {
+                        if (!webApp?.openTelegramLink) return;
+                        const text = `Сьогоднішнє питання в «1 Питання на День»:\n\n${currentQuestion.text}\n\nСпробуй і ти! 👉`;
+                        const botUsername = webApp.initDataUnsafe?.bot_username || "your_bot_username";
+                        const url = `https://t.me/${botUsername}/app`;
+                        const shareUrl = `https://t.me/share/url?url=${encodeURIComponent(url)}&text=${encodeURIComponent(text)}`;
+                        webApp.openTelegramLink(shareUrl);
+                    }}
                     className="w-full mt-12 bg-gradient-to-r from-green-500 to-teal-500 hover:from-green-600 hover:to-teal-600 text-white font-bold py-5 rounded-2xl text-xl shadow-lg transition transform hover:scale-105"
                 >
                     Поділитися питанням з друзями 📤
