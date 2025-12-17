@@ -1,8 +1,7 @@
-@import "tailwindcss" theme;
-@import "tailwindcss/preflight";
-@tailwind utilities;
+/* globals.css */
+@import "tailwindcss";
 
-/* Базові стилі — тема Telegram працює автоматично */
+/* кастомні стилі, якщо треба */
 html, body, #__next {
   height: 100%;
   margin: 0;
@@ -10,7 +9,6 @@ html, body, #__next {
   overscroll-behavior: none;
 }
 
-/* Приховуємо скролбар (як у Telegram) */
 * {
   scrollbar-width: none;
 }
