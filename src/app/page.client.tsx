@@ -165,10 +165,7 @@ export default function Home() {
                 {category === "pair" && !partnerId && (
                     <button
                         onClick={invitePartner}
-                        disabled={!webApp}
-                        className={`w-full bg-gradient-to-r from-pink-500 to-rose-500 hover:from-pink-600 hover:to-rose-600 text-white font-bold py-5 rounded-2xl text-xl shadow-lg transition transform hover:scale-105 mb-8 ${
-                            !webApp ? "opacity-50 cursor-not-allowed" : ""
-                        }`}
+                        className="w-full bg-gradient-to-r from-pink-500 to-rose-500 hover:from-pink-600 hover:to-rose-600 text-white font-bold py-5 rounded-2xl text-xl shadow-lg transition transform hover:scale-105 mb-8"
                     >
                         Запросити партнера 💌
                     </button>
@@ -184,12 +181,12 @@ export default function Home() {
                 {/* Відповідь */}
                 {!allAnswered ? (
                     <div className="space-y-6">
-            <textarea
-                value={myAnswer}
-                onChange={(e) => setMyAnswer(e.target.value)}
-                placeholder="Напиши свою відповідь... ❤️"
-                className="w-full px-6 py-5 text-lg bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-2xl resize-none h-48 focus:ring-4 focus:ring-purple-300 dark:focus:ring-purple-700 focus:border-purple-500 transition shadow-inner text-gray-800 dark:text-gray-200"
-            />
+                        <textarea
+                            value={myAnswer}
+                            onChange={(e) => setMyAnswer(e.target.value)}
+                            placeholder="Напиши свою відповідь... ❤️"
+                            className="w-full px-6 py-5 text-lg bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-2xl resize-none h-48 focus:ring-4 focus:ring-purple-300 dark:focus:ring-purple-700 focus:border-purple-500 transition shadow-inner text-gray-800 dark:text-gray-200"
+                        />
                         <button
                             onClick={submitAnswer}
                             disabled={!myAnswer.trim()}
@@ -220,10 +217,7 @@ export default function Home() {
                 {/* Шаринг */}
                 <button
                     onClick={shareToday}
-                    disabled={!webApp}
-                    className={`w-full mt-12 bg-gradient-to-r from-green-500 to-teal-500 hover:from-green-600 hover:to-teal-600 text-white font-bold py-5 rounded-2xl text-xl shadow-lg transition transform hover:scale-105 ${
-                        !webApp ? "opacity-50 cursor-not-allowed" : ""
-                    }`}
+                    className="w-full mt-12 bg-gradient-to-r from-green-500 to-teal-500 hover:from-green-600 hover:to-teal-600 text-white font-bold py-5 rounded-2xl text-xl shadow-lg transition transform hover:scale-105"
                 >
                     Поділитися питанням з друзями 📤
                 </button>
