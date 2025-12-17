@@ -34,9 +34,9 @@ export default function Home() {
     useEffect(() => {
         if (typeof window !== "undefined" && window.Telegram?.WebApp) {
             const app = window.Telegram.WebApp;
-            setWebApp(app);
             app.ready();
             app.expand();
+            setWebApp(app);
             document.body.classList.toggle("dark", app.colorScheme === "dark");
         }
     }, []);
@@ -123,7 +123,7 @@ export default function Home() {
         if (!webApp?.openTelegramLink) return;
         const botUsername = webApp.initDataUnsafe?.bot_username || "your_bot_username";
         const inviteLink = `https://t.me/${botUsername}/app?startapp=pair_${userId}`;
-        const text = `${userName} запрошує тебе грати в «1 Питання на День» для пар! 💕\n\nЩодня одне глибоке питання — відповідайте разом і зближуйтесь.\n\nПриєднуйся:`;
+        const text = `${userName} запрошує тебе грати в «1 Питання на День» для пар! 💕`;
         const shareUrl = `https://t.me/share/url?url=${encodeURIComponent(inviteLink)}&text=${encodeURIComponent(text)}`;
         webApp.openTelegramLink(shareUrl);
     };
@@ -165,14 +165,7 @@ export default function Home() {
                 {category === "pair" && !partnerId && (
                     <button
                         type="button"
-                        onClick={() => {
-                            if (!webApp?.openTelegramLink) return;
-                            const botUsername = webApp.initDataUnsafe?.bot_username || "your_bot_username";
-                            const inviteLink = `https://t.me/${botUsername}/app?startapp=pair_${userId}`;
-                            const text = `${userName} запрошує тебе грати в «1 Питання на День» для пар! 💕`;
-                            const shareUrl = `https://t.me/share/url?url=${encodeURIComponent(inviteLink)}&text=${encodeURIComponent(text)}`;
-                            webApp.openTelegramLink(shareUrl);
-                        }}
+                        onClick={invitePartner}
                         className="w-full bg-gradient-to-r from-pink-500 to-rose-500 hover:from-pink-600 hover:to-rose-600 text-white font-bold py-5 rounded-2xl text-xl shadow-lg transition transform hover:scale-105 mb-8"
                     >
                         Запросити партнера 💌
@@ -189,16 +182,16 @@ export default function Home() {
                 {/* Відповідь */}
                 {!allAnswered ? (
                     <div className="space-y-6">
-                        <textarea
-                            value={myAnswer}
-                            onChange={(e) => setMyAnswer(e.target.value)}
-                            placeholder="Напиши свою відповідь... ❤️"
-                            className="w-full px-6 py-5 text-lg bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-2xl resize-none h-48 focus:ring-4 focus:ring-purple-300 dark:focus:ring-purple-700 focus:border-purple-500 transition shadow-inner text-gray-800 dark:text-gray-200"
-                        />
+            <textarea
+                value={myAnswer}
+                onChange={(e) => setMyAnswer(e.target.value)}
+                placeholder="Напиши свою відповідь... ❤️"
+                className="w-full px-6 py-5 text-lg bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-2xl resize-none h-48 focus:ring-4 focus:ring-purple-300 dark:focus:ring-purple-700 focus:border-purple-500 transition shadow-inner text-gray-800 dark:text-gray-200"
+            />
                         <button
+                            type="button"
                             onClick={submitAnswer}
-                            disabled={!myAnswer.trim()}
-                            className="w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 disabled:from-gray-400 disabled:to-gray-500 text-white font-bold py-5 rounded-2xl text-xl shadow-lg transition transform hover:scale-105 disabled:scale-100"
+                            className="w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white font-bold py-5 rounded-2xl text-xl shadow-lg transition transform hover:scale-105"
                         >
                             Надіслати відповідь 🚀
                         </button>
@@ -225,14 +218,7 @@ export default function Home() {
                 {/* Шаринг */}
                 <button
                     type="button"
-                    onClick={() => {
-                        if (!webApp?.openTelegramLink) return;
-                        const text = `Сьогоднішнє питання в «1 Питання на День»:\n\n${currentQuestion.text}\n\nСпробуй і ти! 👉`;
-                        const botUsername = webApp.initDataUnsafe?.bot_username || "your_bot_username";
-                        const url = `https://t.me/${botUsername}/app`;
-                        const shareUrl = `https://t.me/share/url?url=${encodeURIComponent(url)}&text=${encodeURIComponent(text)}`;
-                        webApp.openTelegramLink(shareUrl);
-                    }}
+                    onClick={shareToday}
                     className="w-full mt-12 bg-gradient-to-r from-green-500 to-teal-500 hover:from-green-600 hover:to-teal-600 text-white font-bold py-5 rounded-2xl text-xl shadow-lg transition transform hover:scale-105"
                 >
                     Поділитися питанням з друзями 📤
